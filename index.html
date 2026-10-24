@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>قاموس مدرستي الناطق</title>
+<style>
+:root{--bg1:#0b1f3a;--bg2:#0c3050;--ink:#f1f5f9;--glass:rgba(255,255,255,.09);--line:rgba(255,255,255,.2);--gold:#f5b942;--cyan:#22d3ee;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root:not([data-theme="dark"]){}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--ink:#f1f5f9}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{font-family:Calibri,Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,var(--bg1),var(--bg2) 60%,#0a4a5c) fixed;min-height:100%;padding:0 14px 40px}
+header{text-align:center;padding:10px 0 2px}
+h1{font-size:clamp(20px,4.5vw,28px)}
+header p{opacity:.8;margin-top:4px;font-size:16px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:8px;overflow-x:auto;padding:10px 2px;background:rgba(11,31,58,.92)}
+nav a small{font-size:12px;opacity:.85}nav a{text-align:center;line-height:1.25;flex:none;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:var(--glass)}
+nav a:focus-visible,.w:focus-visible,.ar:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+section{max-width:1000px;margin:18px auto}
+h2{display:flex;justify-content:space-between;padding:5px 14px;border-radius:10px 10px 0 0;font-size:15px;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:6px;padding:8px;background:var(--glass);border:1px solid var(--line);border-radius:0 0 14px 14px}
+.w{display:flex;flex-direction:column;align-items:center;gap:0;padding:5px 3px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:inherit;font:inherit;cursor:pointer;transition:background .15s,transform .1s}
+.w:hover{background:rgba(255,255,255,.16)}
+.w:active{transform:scale(.97)}
+.w.on{background:rgba(245,185,66,.3);border-color:var(--gold)}
+.e{font-size:20px;line-height:1.2}
+.ar{font-size:18px;font-weight:700;direction:rtl}
+.en{font-size:12.5px;opacity:.9;direction:ltr;border-radius:8px;padding:2px 8px}
+.en{cursor:default}
+.ar{border-radius:8px;padding:0 8px}.ar:hover{background:rgba(255,255,255,.15)}
+.list .w{flex-direction:row;justify-content:space-between;gap:12px}
+.list{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.list .ar{font-size:16px}
+.colors .w{min-height:56px;justify-content:center;border:none;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.colors .ar{font-size:19px}
+.tip{max-width:1000px;margin:10px auto;padding:10px 16px;border-radius:12px;background:rgba(245,185,66,.18);border:1px solid var(--gold);text-align:center}
+.hint{text-align:center;opacity:.8;margin-top:6px;font-size:15px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<header><h1>🔊 قاموس مدرستي الناطق</h1><p dir="ltr" style="font-weight:700">My School Talking Dictionary</p><p>اضغط على الكلمة العربية لتسمع نطقها</p></header>
+<nav id="nav"></nav>
+<main id="main"></main>
+<p class="hint">وحدة «مدرستي»: في المدرسة • في فصلي • المكتبة • المقصف</p>
+<script>
+const S=[
+["nouns","الأسماء","Nouns","#2563eb","g",[
+["school / my school","مَدْرَسَة / مَدْرَسَتِي","🏫"],["classroom / my class","فَصْل / فَصْلِي","🏛️"],["teacher","مُعَلِّم","🧑‍🏫"],["friend / my friends","صَدِيق / أَصْدِقَائِي","🧑‍🤝‍🧑"],
+["canteen","مَقْصِف","🥪"],["library","مَكْتَبَة","📚"],["music room","غُرْفَةُ الْمُوسِيقَى","🎹"],["computer room","غُرْفَةُ الْحَاسُوب","🖥️"],
+["board","سَبُّورَة","🟩"],["chair","كُرْسِيّ","🪑"],["table / desk","طَاوِلَة","🪵"],["notebook","دَفْتَر","📓"],
+["pen / pencil","قَلَم","✏️"],["piano","بِيَانُو","🎹"],["guitar","جِيتَار","🎸"],["music","مُوسِيقَى","🎵"],
+["eraser","مِمْحَاة","🧽"],["book / books","كِتَاب / كُتُب","📖"],["glue","صَمْغ","🧴"],["bag","حَقِيبَة","🎒"],
+["food","طَعَام","🍲"],["fruits","فَوَاكِه","🍎"],["break time","وَقْتُ الرَّاحَة","⏰"],["morning","الصَّبَاح","🌅"],
+["Grade 2","الصَّفُّ الثَّانِي","2️⃣"],["lesson","الدَّرْس","📝"],["name","اِسْم","🏷️"]]],
+["verbs","الأفعال","Verbs","#16a34a","g",[
+["I go","أَذْهَبُ","🚶"],["I read","أَقْرَأُ","📖"],["I write","أَكْتُبُ","✍️"],["I sit","أَجْلِسُ","💺"],
+["I love / like","أُحِبُّ","❤️"],["I prefer","أُفَضِّلُ","👍"],["I buy","أَشْتَرِي","🛒"],["I eat","آكُلُ","🍽️"],
+["I listen","أَسْتَمِعُ","🎧"],["I see","أَرَى","👀"],["I play (music)","أَعْزِفُ","🎻"],["he explains","يَشْرَحُ","🧑‍🏫"],
+["there is / there are","يُوجَدُ / تُوجَدُ","📍"]]],
+["preps","حروف الجر","Prepositions","#ea580c","l",[
+["in / at","فِي","📍"],["to","إِلَى","➡️"],["on","عَلَى","📦"],["with (someone)","مَعَ","👭"],
+["about","عَنْ","💬"],["from","مِنْ","⬅️"],["with / by (a tool)","بِـ","✏️"],["for / to","لِـ","🎁"]]],
+["pat","الأساليب والتراكيب","Sentence Patterns","#be185d","l",[
+["Hello, my name is ...","مَرْحَبًا، أَنَا اسْمِي ...","👋"],["I am in Grade ...","أَنَا فِي الصَّفِّ ...","🏫"],["I go to ...","أَنَا أَذْهَبُ إِلَى ...","🚶"],["I read ...","أَنَا أَقْرَأُ ...","📖"],
+["I write ...","أَنَا أَكْتُبُ ...","✍️"],["I eat ...","أَنَا آكُلُ ...","🍽️"],["I sit on ...","أَنَا أَجْلِسُ عَلَى ...","💺"],["I play (the) ...","أَنَا أَعْزِفُ عَلَى ...","🎸"],
+["I buy ...","أَنَا أَشْتَرِي ...","🛒"],["I listen to ...","أَنَا أَسْتَمِعُ إِلَى ...","🎧"],["I love / like ...","أَنَا أُحِبُّ ...","❤️"],["In my class I see ...","فِي فَصْلِي أَرَى ...","👀"],
+["There is / there are in ...","يُوجَدُ فِي ...","📍"],["During break time ...","فِي وَقْتِ الرَّاحَةِ ...","⏰"],["I prefer ... because it is ...","أَنَا أُفَضِّلُ ... لِأَنَّهَا ...","👍"],["... makes me strong","... يَجْعَلُنِي قَوِيًّا","💪"],
+["How beautiful ...!","مَا أَجْمَلَ ...!","✨"]]],
+["adj","الصفات","Adjectives","#0e7490","g",[
+["big","كَبِير / كَبِيرَة","🐘"],["beautiful","جَمِيل / جَمِيلَة","🌸"],["useful","مُفِيد / مُفِيدَة","💡"],["fun","مُمْتِع / مُمْتِعَة","🎉"],["strong","قَوِيّ / قَوِيَّة","💪"]]],
+["col","الألوان","Colors","#7e22ce","c",[
+["red","أَحْمَر","#e53935"],["blue","أَزْرَق","#1e88e5"],["green","أَخْضَر","#43a047"],["yellow","أَصْفَر","#fdd835;color:#333!important;text-shadow:none"],["orange","بُرْتُقَالِيّ","#fb8c00"],
+["purple","بَنَفْسَجِيّ","#8e24aa"],["pink","وَرْدِيّ","#ec7fa9"],["white","أَبْيَض","#f5f5f5;color:#222!important;text-shadow:none"],["black","أَسْوَد","#212121"],["brown","بُنِّيّ","#8d6e63"]]],
+["op","في رأيي","In my opinion","#6d28d9","l",[
+["In my opinion, the library is a fun place because ...","فِي رَأْيِي، الْمَكْتَبَةُ مَكَانٌ مُمْتِعٌ؛ لِأَنَّهَا ...","📚"],["I prefer ... because it is ...","أَنَا أُفَضِّلُ ... لِأَنَّهَا ...","👍"],["How beautiful my school is! I love ...","مَا أَجْمَلَ مَدْرَسَتِي! أُحِبُّ ...","🏫"]]]
+];
+let voices=[],cur=null;
+function load(){voices=speechSynthesis.getVoices()}
+if('speechSynthesis' in window){load();speechSynthesis.onvoiceschanged=load}
+function say(text,lang,card){
+ if(!('speechSynthesis' in window)){alert('المتصفح لا يدعم الصوت');return}
+ speechSynthesis.cancel();
+ const t=text.replace(/\.\.\.|…/g,' ').replace(/[\/]/g,' . ').replace(/ـ/g,'').replace(/[!]/g,' ');
+ const u=new SpeechSynthesisUtterance(t);u.lang='ar-SA';u.rate=.8;
+ const v=voices.find(v=>v.lang.replace('_','-').toLowerCase().startsWith('ar'));if(v)u.voice=v;
+ if(cur)cur.classList.remove('on');cur=card;card.classList.add('on');
+ u.onend=u.onerror=()=>card.classList.remove('on');
+ speechSynthesis.speak(u)}
+const nav=document.getElementById('nav'),main=document.getElementById('main');
+S.forEach(([id,ar,en,col,kind,items])=>{
+ nav.insertAdjacentHTML('beforeend',`<a href="#${id}"><small dir="ltr">${en}</small><br>${ar}</a>`);
+ const sec=document.createElement('section');sec.id=id;
+ sec.innerHTML=`<h2 style="background:${col}"><span>${ar}</span><span dir="ltr">${en}</span></h2>`;
+ const g=document.createElement('div');g.className='grid'+(kind==='l'?' list':'')+(kind==='c'?' colors':'');
+ items.forEach(([e,a,x])=>{
+  const c=document.createElement('div');c.className='w';c.tabIndex=-1;
+  if(kind==='c')c.setAttribute('style',`background:${x}`);
+  const ea=document.createElement('button');ea.className='ar';ea.textContent='🔊 '+a;ea.setAttribute('aria-label','استمع: '+a);
+  const ee=document.createElement('span');ee.className='en';ee.textContent=e;
+  [ea].forEach(b=>{b.style.cssText='background:none;border:0;color:inherit;font-family:inherit;cursor:pointer'});
+  ea.onclick=()=>say(a,'ar',c);
+  if(kind==='c'){c.append(ee,ea)}
+  else if(kind==='l'){const em=document.createElement('span');em.className='e';em.textContent=x;const m=document.createElement('div');m.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center';m.append(ee,ea);c.append(em,m)}
+  else{const em=document.createElement('span');em.className='e';em.textContent=x;c.append(em,ee,ea)}
+  g.append(c)});
+ sec.append(g);main.append(sec)});
+</script></body></html>
